@@ -2,7 +2,7 @@ name: Generate Dev Container Image
 on:
   push:
     branches:
-      - 'fabian'
+      - 'dev-container'
     paths:
       - '.devcontainer/**/*'
 permissions:
