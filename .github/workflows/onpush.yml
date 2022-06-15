@@ -1,0 +1,46 @@
+name: CI pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - 'v*' # this tag type is used for release pipelines
+
+jobs:
+  ci-pipeline:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Unit and Integration Tests
+        uses: devcontainers/ci@v0.2
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+        with:
+          imageName: ghcr.io/fjakobs/notebook-best-practices
+          env: |
+            DATABRICKS_HOST
+            DATABRICKS_TOKEN
+          runCmd: |
+            pip install -r requirements-dev.txt
+            pip install -e .
+            echo "Launching unit tests"
+            pytest tests/
+            echo "obless deployment (files only upload)"
+            dbx deploy --job=covid_analysis_etl_integ --files-only
+            echo "Run the job in a jobless fashion"
+            dbx launch --job=covid_analysis_etl_integ --as-run-submit --trace
