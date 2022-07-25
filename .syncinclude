@@ -1,0 +1,5 @@
+dist/
+**/*.py
+tests/
+requirements.txt
+README.md
