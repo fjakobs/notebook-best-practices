@@ -18,7 +18,7 @@ jobs:
 
           # Update this based on your image name and the path of the .devcontainer folder in your repository
           FOLDER_WITH_DOT_DEVCONTAINER="."
-          IMAGE_NAME="databrick-dbr-10.4"
+          IMAGE_NAME="databricks-dbr-10.4"
           IMAGE_REPOSITORY="$(echo "ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
 
           # [Optional] Enable buildkit, set output to plain text for logging
