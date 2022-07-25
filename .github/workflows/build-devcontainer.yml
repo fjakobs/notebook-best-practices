@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'dev-container'
-    paths:
-      - '.devcontainer/**/*'
 permissions:
   contents: read
   packages: write
