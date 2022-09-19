@@ -6,7 +6,7 @@
 
 !cp ../requirements.txt ~/.
 %pip install -r ~/requirements.txt
-%pip install pytest_notebook_reporter-0.1.0-py3-none-any.whl --force-reinstall
+%pip install /dbfs/fjakobs/pytest_notebook_reporter-0.1.0-py3-none-any.whl
 
 # COMMAND ----------
 
@@ -24,12 +24,12 @@
 
 dbutils.library.restartPython()
 
-
 # COMMAND ----------
 
 import pytest
 import os
 import sys
+import pytest_notebook_reporter
 
 # Run all tests in the repository root.
 notebook_path = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
@@ -39,7 +39,7 @@ os.chdir(f'/Workspace/{repo_root}')
 # Skip writing pyc files on a readonly filesystem.
 sys.dont_write_bytecode = True
 
-retcode = pytest.main([".", "-p", "no:cacheprovider", "-qq", "--no-summary", "-o", "console_output_style=classic"])
+retcode = pytest.main([".", "-p", "no:cacheprovider", "-qq", "--no-summary", "-o", "console_output_style=classic"], plugins=[pytest_notebook_reporter])
 
 # Fail the cell execution if we have any test failures.
 assert retcode == 0, 'The pytest invocation failed. See the log above for details.'
